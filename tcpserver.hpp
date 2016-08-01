@@ -29,16 +29,9 @@ private:
     QTcpServer *_server;
     QTcpSocket *_socket;
     uint _port;
-
     QTimer _connectionTimer;
-
     Temporizador _timer;
     bool _bytesWritten;
-
-    QByteArray buildDeviceFrame(uchar commandId, QByteArray data);
-
-    uchar addUser(const uchar *data);
-
 private slots:
     void connectionEstablished();
     void serverError(QAbstractSocket::SocketError socketError);

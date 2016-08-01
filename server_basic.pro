@@ -17,14 +17,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     tcpserver.cpp \
-    compcadefs.cpp \
     crc.cpp \
     util.cpp \
     temporizador.cpp
 
 HEADERS  += mainwindow.hpp \
     tcpserver.hpp \
-    compcadefs.h \
     crc.h \
     util.hpp \
     temporizador.h

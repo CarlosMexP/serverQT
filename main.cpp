@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {    
     QApplication a(argc, argv);
     MainWindow w;
-
+/*
     QSqlDatabase db(QSqlDatabase::addDatabase("QSQLITE"));
     QString databasePath;
 
@@ -28,6 +28,11 @@ int main(int argc, char *argv[])
     }
 
     QMessageBox::critical(NULL, "Emulador PCA", "database not open.");
+    */
+
+
+    w.show();
+    return a.exec();
 
     return 0;
 }
