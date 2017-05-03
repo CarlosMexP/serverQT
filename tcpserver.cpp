@@ -14,7 +14,8 @@ TcpServer::TcpServer(QObject *parent) :
 {
     _connectionTimer.setInterval(10000);
     connect(_server, SIGNAL(newConnection()), this, SLOT(connectionEstablished()));
-    connect(&_connectionTimer, SIGNAL(timeout()), this, SLOT(diconnectClient()));
+    connect(&_connectionTimer, SIGNAL(timeout()), this, SLOT(disconnectClient()));
+    rxTextFormat = true; // Default mode
 }
 
 TcpServer::~TcpServer()
@@ -40,6 +41,17 @@ int TcpServer::port()
 {
     return _port;
 }
+
+void TcpServer::setRxTextFormat()
+{
+    rxTextFormat = true;
+}
+
+void TcpServer::setRxHexFormat()
+{
+    rxTextFormat = false; // HEX format
+}
+
 
 bool TcpServer::open()
 {
@@ -84,50 +96,29 @@ void TcpServer::requestReceived()
 {
     QByteArray receiverBuffer;
     QByteArray data;
-    uchar cmd;
     QString strAux;
     uchar rsp;
 
     _connectionTimer.stop();
 
     receiverBuffer = _socket->readAll();
-    QString rxMessage = QString::fromStdString(receiverBuffer.toStdString());
-    QString txMessage = "..."+rxMessage;
-    emit log("Frame Received: " + rxMessage );
-
-    _socket->write(QByteArray::fromStdString(txMessage.toStdString()));
-
-/*
-    switch(cmd)
-    {
-    case ComPcaDefs::CMD_CONECTAR:
-        _socket->write(this->buildDeviceFrame(ComPcaDefs::RSP_CONECTAR, data));
-        break;
-    case ComPcaDefs::CMD_LEER_HORA_DIA_PCA:
-        strAux = QDateTime::currentDateTime().toString("hhmmssddMMyy");
-        emit log("Current Date Time: " + strAux);
-        data.resize(7);
-        data[0] = strAux.mid(0, 2).toUInt(0, 16);
-        data[1] = strAux.mid(2, 2).toUInt(0, 16);
-        data[2] = strAux.mid(4, 2).toUInt(0, 16);
-        data[3] = QDateTime::currentDateTime().date().dayOfWeek();
-        data[4] = strAux.mid(6, 2).toUInt(0, 16);
-        data[5] = strAux.mid(8, 2).toUInt(0, 16);
-        data[6] = strAux.mid(10, 2).toUInt(0, 16);
-        _socket->write(this->buildDeviceFrame(ComPcaDefs::RSP_LEER_HORA_DIA_PCA, data));
-        break;
-    case ComPcaDefs::CMD_AGREGAR_USUARIO:
-        rsp = addUser((uchar*) &receiverBuffer.constData()[3]);
-        _socket->write(this->buildDeviceFrame(rsp, data));
-        break;
-    default:
-        break;
+    if (rxTextFormat){
+        QString rxMessage = QString::fromStdString(receiverBuffer.toStdString());
+        QString txMessage = rxMessage; // A transmitir eco del mensaje
+        emit log("Frame Received: " + rxMessage );
+        _socket->write(QByteArray::fromStdString(txMessage.toStdString()));
     }
-*/
+    else{
+        /////////// MENSAJES EN HEXADECIMAL /////////////
+        QByteArray txMessage = receiverBuffer; // A transmitir eco del mensaje
+        emit log("Frame Received: " + txMessage.toHex() );
+        _socket->write(txMessage);
+    }
+
     _connectionTimer.start();
 }
 
-void TcpServer::diconnectClient()
+void TcpServer::disconnectClient()
 {
     _socket->abort();
     //delete _socket;

@@ -28,6 +28,11 @@ private slots:
 
     void on_pushButtonClear_clicked();
 
+
+    void on_radioButtonHex_clicked();
+
+    void on_radioButtonText_clicked();
+
 private:
     Ui::MainWindow *ui;
 

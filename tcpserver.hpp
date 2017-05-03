@@ -18,7 +18,8 @@ public:
 
     void setPort(uint port);
     int port();
-
+    void setRxTextFormat();  // Format of the message for the signal "log"
+    void setRxHexFormat();   // Format of the message for the signal "log"
     bool open();
     void close();
 
@@ -32,13 +33,13 @@ private:
     QTimer _connectionTimer;
     Temporizador _timer;
     bool _bytesWritten;
+    bool rxTextFormat; // Format of the message for the signal "log"
 private slots:
     void connectionEstablished();
     void serverError(QAbstractSocket::SocketError socketError);
     void socketError(QAbstractSocket::SocketError socketError);
     void requestReceived();
-
-    void diconnectClient();
+    void disconnectClient();
 
 };
 

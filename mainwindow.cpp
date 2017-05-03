@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     ui->pushButtonStop->setHidden(true);
+    //The server emits a signal with the received message
     connect(&_server, SIGNAL(log(QString)), this, SLOT(log(QString)));
 }
 
@@ -55,4 +56,14 @@ void MainWindow::on_pushButtonQuit_clicked()
 void MainWindow::on_pushButtonClear_clicked()
 {
     ui->listWidget->clear();
+}
+
+void MainWindow::on_radioButtonHex_clicked()
+{
+    _server.setRxHexFormat();
+}
+
+void MainWindow::on_radioButtonText_clicked()
+{
+    _server.setRxTextFormat();
 }
